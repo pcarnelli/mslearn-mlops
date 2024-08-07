@@ -16,6 +16,6 @@ jobs:
       with:
         creds: ${{secrets.AZURE_CREDENTIALS}}
     - name: Run train job
-      run: bash -x az ml job create --file job.yml
+      run: bash -x az ml job create --file job.yml --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace
       working-directory: src
 
