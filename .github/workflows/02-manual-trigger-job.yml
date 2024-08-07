@@ -15,5 +15,7 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{secrets.AZURE_CREDENTIALS}}
-
+    - name: Run train job
+      run: bash -x az ml job create --file job.yml
+      working-directory: src
 
