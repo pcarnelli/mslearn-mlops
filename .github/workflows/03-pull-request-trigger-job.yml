@@ -11,6 +11,10 @@ jobs:
     steps:
     - name: Check out repo
       uses: actions/checkout@main
+    - name: Use Python version 3.8
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.8'
     - name: Install az ml extension
       run: az extension add -n ml -y
     - name: Install dependencies
