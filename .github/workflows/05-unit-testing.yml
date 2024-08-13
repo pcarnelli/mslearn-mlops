@@ -1,11 +1,11 @@
-name: Code checks
+name: Unit testing
 
 on:
   workflow_dispatch:
 
 jobs:
   job1:
-    name: unit testing
+    name: unit_testing
     runs-on: ubuntu-latest
     steps:
     - name: Check out repo
