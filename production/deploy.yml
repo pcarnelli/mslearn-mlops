@@ -1,8 +1,8 @@
 $schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
 model:
   name: diabetes-prod-model
-  #version: 1
-  path: model
+  version: 1
+  path: diabetes-prod-model/model
   type: mlflow_model
 instance_type: Standard_F4s_v2
 instance_count: 1
