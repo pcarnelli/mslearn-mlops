@@ -7,24 +7,8 @@ on:
       - main
 
 jobs:
-  experiment:
-    environment: Development
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@main
-      - name: Install az ml extension
-        run: az extension add -n ml -y
-      - name: Azure login
-        uses: azure/login@v1
-        with:
-          creds: ${{secrets.AZURE_CREDENTIALS}}
-      - name: Run development train job
-        run: bash -x az ml job create --file job-dev.yml --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --stream
-        working-directory: src
-  production:
+  endpoint:
     environment: Production
-    needs: experiment
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
@@ -35,6 +19,22 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
-      - name: Run production train job
-        run: bash -x az ml job create --file job-prod.yml --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --stream
-        working-directory: src
+      - name: Create endpoint
+        run: bash -x az ml online-endpoint create --name mslearn-mlops-endpoint -f endpoint.yml
+        working-directory: production
+  deploy:
+    environment: Production
+    needs: endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@main
+      - name: Install az ml extension
+        run: az extension add -n ml -y
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+      - name: Deploy model to created endpoint
+        run: bash -x az ml online-deployment create --name diabetes-prod --endpoint mslearn-mlops-endpoint -f deploy.yml --all-traffic
+        working-directory: production
