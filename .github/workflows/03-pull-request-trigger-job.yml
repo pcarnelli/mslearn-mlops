@@ -1,37 +1,54 @@
 name: Trigger an Azure Machine Learning job on a pull request
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
 
 jobs:
+  lint_pull:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@main
+      - name: Use Python version 3.8
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.8'
+      - name: Install Flake8
+        run: |
+          python -m pip install flake8
+      - name: Run linting tests
+        run: | 
+          flake8 src/model/
+  unit_testing_pull:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@main
+      - name: Use Python version 3.8
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run unit tests
+        run: | 
+          pytest tests/
   train:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out repo
-      uses: actions/checkout@main
-    - name: Use Python version 3.8
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.8'
-    - name: Install az ml extension
-      run: az extension add -n ml -y
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Azure login
-      uses: azure/login@v1
-      with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-    - name: Run linting tests
-      run: | 
-        flake8 src/model/
-    - name: Run unit tests
-      run: | 
-        pytest tests/
-    - name: Run train job
-      run: |
-        echo "Will add job submission here"
+      - name: Check out repo
+        uses: actions/checkout@main
+      - name: Install az ml extension
+        run: az extension add -n ml -y
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+      - name: Run train job
+        run:  | 
+          echo "Azure ML job creation command goes here"
