@@ -1,0 +1,40 @@
+name: Trigger a job on a pull request using environments
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  experiment:
+    environment: Development
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@main
+      - name: Install az ml extension
+        run: az extension add -n ml -y
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+      - name: Run development train job
+        run: bash -x az ml job create --file job-dev.yml --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --stream
+        working-directory: src
+  production:
+    environment: Production
+    needs: experiment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@main
+      - name: Install az ml extension
+        run: az extension add -n ml -y
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+      - name: Run production train job
+        run: bash -x az ml job create --file job-prod.yml --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --stream
+        working-directory: src
