@@ -8,7 +8,7 @@ on:
 
 jobs:
   endpoint:
-    environment: Production
+    environment: Development
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
@@ -23,7 +23,7 @@ jobs:
         run: bash -x az ml online-endpoint create --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --name mslearn-mlops-endpoint --file endpoint.yml
         working-directory: production
   deploy:
-    environment: Production
+    environment: Development
     needs: endpoint
     runs-on: ubuntu-latest
     steps:
