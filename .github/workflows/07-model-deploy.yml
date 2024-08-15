@@ -20,7 +20,7 @@ jobs:
         with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
       - name: Create endpoint
-        run: bash -x az ml online-endpoint create --name mslearn-mlops-endpoint -f endpoint.yml
+        run: bash -x az ml online-endpoint create --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --name mslearn-mlops-endpoint --file endpoint.yml
         working-directory: production
   deploy:
     environment: Production
@@ -36,5 +36,5 @@ jobs:
         with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
       - name: Deploy model to created endpoint
-        run: bash -x az ml online-deployment create --name diabetes-prod --endpoint mslearn-mlops-endpoint -f deploy.yml --all-traffic
+        run: bash -x az ml online-deployment create --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --name diabetes-prod --endpoint mslearn-mlops-endpoint --file deploy.yml --all-traffic
         working-directory: production
