@@ -8,6 +8,7 @@ on:
 
 jobs:
   experiment:
+    environment: Development
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
@@ -22,6 +23,7 @@ jobs:
         run: bash -x az ml job create --file job-dev.yml --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --stream
         working-directory: src
   production:
+    environment: Production
     needs: experiment
     runs-on: ubuntu-latest
     steps:
