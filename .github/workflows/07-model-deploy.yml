@@ -7,24 +7,24 @@ on:
       - main
 
 jobs:
-  endpoint:
-    environment: Development
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@main
-      - name: Install az ml extension
-        run: az extension add -n ml -y
-      - name: Azure login
-        uses: azure/login@v1
-        with:
-          creds: ${{secrets.AZURE_CREDENTIALS}}
-      - name: Create endpoint
-        run: bash -x az ml online-endpoint create --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --name mslearn-mlops-endpoint --file endpoint.yml
-        working-directory: production
+  #endpoint:
+  #  environment: Development
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Check out repo
+  #      uses: actions/checkout@main
+  #    - name: Install az ml extension
+  #      run: az extension add -n ml -y
+  #    - name: Azure login
+  #      uses: azure/login@v1
+  #      with:
+  #        creds: ${{secrets.AZURE_CREDENTIALS}}
+  #    - name: Create endpoint
+  #      run: bash -x az ml online-endpoint create --resource-group mslearn-dscp-resgroup --workspace-name mslearn-dscp-workspace --name mslearn-mlops-endpoint --file endpoint.yml
+  #      working-directory: production
   deploy:
     environment: Development
-    needs: endpoint
+  #  needs: endpoint
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
