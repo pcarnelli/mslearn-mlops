@@ -1,4 +1,4 @@
-name: Trigger a job on a pull request using environments
+name: Deploys the latest version of the registered model
 
 on:
   workflow_dispatch:
